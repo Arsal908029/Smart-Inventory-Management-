@@ -1,0 +1,205 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-graph-up"></i> Business Intelligence Reports</h2>
+</div>
+
+<!-- Key Metrics -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="card-title text-uppercase fw-bold opacity-75">Inventory Cost Value</h6>
+                <h2 class="mb-0">Rs.<%= inventoryValuation.totalValue.toLocaleString() %></h2>
+                <div class="mt-2 small opacity-75">Total physical items: <%= inventoryValuation.totalItems %></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="card-title text-uppercase fw-bold opacity-75">Potential Retail Value</h6>
+                <h2 class="mb-0">Rs.<%= inventoryValuation.retailValue.toLocaleString() %></h2>
+                <div class="mt-2 small opacity-75">If all current stock is sold</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-info text-white shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="card-title text-uppercase fw-bold opacity-75">Projected Profit Margin</h6>
+                <h2 class="mb-0">
+                    <% if(inventoryValuation.retailValue > 0) { %>
+                        <%= (((inventoryValuation.retailValue - inventoryValuation.totalValue) / inventoryValuation.retailValue) * 100).toFixed(1) %>%
+                    <% } else { %>
+                        0%
+                    <% } %>
+                </h2>
+                <div class="mt-2 small opacity-75">Based on current stock prices vs costs</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-4">
+        <label for="aggregationSelect" class="form-label fw-bold"><i class="bi bi-filter-circle"></i> Select Pre-defined Aggregation View:</label>
+        <select id="aggregationSelect" class="form-select border-primary shadow-sm" onchange="toggleAggregationView()">
+            <option value="all">Show All Aggregations</option>
+            <option value="revenue">1. Revenue by Category (Lookup & Unwind)</option>
+            <option value="trend">2. Daily Sales Trend (Date Grouping & Match)</option>
+            <option value="inventory">3. Inventory Valuation (Math Operators)</option>
+        </select>
+    </div>
+</div>
+
+<div class="row" id="aggregationsContainer">
+    <!-- Revenue by Category -->
+    <div class="col-md-6 mb-4 agg-view" id="view-revenue">
+        <div class="card shadow-sm h-100 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Revenue by Category</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="categoryChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Sales Trend -->
+    <div class="col-md-6 mb-4 agg-view" id="view-trend">
+        <div class="card shadow-sm h-100 border-success">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-graph-up-arrow"></i> 30-Day Sales Trend</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="trendChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Inventory Valuation (Already at top, but we'll show a detail card here) -->
+    <div class="col-md-12 mb-4 agg-view" id="view-inventory">
+        <div class="card shadow-sm h-100 border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-calculator"></i> Inventory Valuation Breakdown</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-hover mt-3">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Total Items</strong></td>
+                            <td><%= inventoryValuation.totalItems %></td>
+                            <td>Total physical units in warehouse</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cost Value</strong></td>
+                            <td>Rs.<%= inventoryValuation.totalValue.toLocaleString() %></td>
+                            <td>Amount spent acquiring inventory</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Retail Value</strong></td>
+                            <td>Rs.<%= inventoryValuation.retailValue.toLocaleString() %></td>
+                            <td>Total expected revenue if all sold</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleAggregationView() {
+    const selected = document.getElementById('aggregationSelect').value;
+    const views = document.querySelectorAll('.agg-view');
+    
+    views.forEach(view => {
+        if (selected === 'all' || view.id === 'view-' + selected) {
+            view.style.display = 'block';
+        } else {
+            view.style.display = 'none';
+        }
+    });
+}
+// Run once on load
+document.addEventListener('DOMContentLoaded', toggleAggregationView);
+</script>
+
+<script>
+    // Data parsing for Revenue By Category
+    const catData = <%- JSON.stringify(revenueByCategory || []) %>;
+    const catLabels = catData.map(d => d._id);
+    const catRevenues = catData.map(d => d.totalRevenue);
+
+    new Chart(document.getElementById('categoryChart'), {
+        type: 'doughnut',
+        data: {
+            labels: catLabels,
+            datasets: [{
+                data: catRevenues,
+                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+                hoverBorderColor: "rgba(234, 236, 244, 1)",
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Rs.' + context.raw.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Data parsing for Daily Trend
+    const trendData = <%- JSON.stringify(dailySales || []) %>;
+    const trendLabels = trendData.map(d => d._id);
+    const trendRevenues = trendData.map(d => d.revenue);
+
+    new Chart(document.getElementById('trendChart'), {
+        type: 'line',
+        data: {
+            labels: trendLabels,
+            datasets: [{
+                label: 'Revenue',
+                data: trendRevenues,
+                borderColor: '#4e73df',
+                backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                pointRadius: 3,
+                pointBackgroundColor: '#4e73df',
+                pointBorderColor: '#4e73df',
+                pointHoverRadius: 3,
+                pointHoverBackgroundColor: '#4e73df',
+                pointHoverBorderColor: '#4e73df',
+                pointHitRadius: 10,
+                pointBorderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) { return 'Rs.' + value; }
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+</script>

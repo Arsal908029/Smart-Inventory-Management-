@@ -1,0 +1,39 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Replica Set Status</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow-sm mb-4 border-success">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-server"></i> Replica Set Configuration (rs.status)</h5>
+            </div>
+            <div class="card-body">
+                <% if(isReplicaSet) { %>
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle-fill"></i> <strong>Replica Set Detected!</strong> This cluster is actively running as a replica set, fulfilling the requirement for ACID transactions and high availability.
+                    </div>
+                    <h6 class="fw-bold">rs.status() Output:</h6>
+                    <pre class="bg-dark text-success p-3 rounded border"><code><%= replStatus %></code></pre>
+                <% } else { %>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i> <strong>Standalone Mode Detected / Unauthorized</strong>
+                        <p class="mb-0 mt-2">The database is currently not running as a Replica Set, or you do not have the required cluster permissions to run <code>rs.status()</code>.</p>
+                        <p class="mb-0 mt-2 small text-muted"><%= replStatus %></p>
+                    </div>
+                    
+                    <h5 class="mt-4 border-bottom pb-2">How to Setup a Local Replica Set for Testing</h5>
+                    <pre class="bg-dark text-light p-3 rounded"><code># 1. Start mongod with a replSet name
+mongod --replSet rs0 --port 27017 --dbpath /data/db --bind_ip localhost
+
+# 2. Open mongosh and initiate the replica set
+mongosh
+> rs.initiate()
+
+# 3. Verify status
+> rs.status()</code></pre>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-0">User Profile</h2>
+        </div>
+    </div>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <%= success %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <% } %>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <% } %>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <img src="/uploads/<%= userDoc.avatar || 'default-avatar.png' %>" alt="Avatar" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover; background-color: #f8f9fa;">
+                    <h4 class="mb-1"><%= userDoc.name %></h4>
+                    <p class="text-muted mb-2"><%= userDoc.email %></p>
+                    <span class="badge bg-primary text-capitalize"><%= userDoc.role %></span>
+                    
+                    <hr>
+                    <div class="d-flex justify-content-between text-start small mt-3">
+                        <span class="text-muted">Member Since:</span>
+                        <span class="fw-bold"><%= new Date(userDoc.createdAt).toLocaleDateString() %></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-body">
+                    <h5 class="card-title mb-0">Edit Profile</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/user/profile" method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="<%= userDoc.name %>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" value="<%= userDoc.email %>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role</label>
+                            <input type="text" class="form-control text-capitalize" id="role" value="<%= userDoc.role %>" disabled>
+                            <div class="form-text">Role can only be changed by an administrator.</div>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

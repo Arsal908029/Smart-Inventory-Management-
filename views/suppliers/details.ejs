@@ -1,0 +1,117 @@
+<div class="row justify-content-center">
+    <div class="col-xl-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1"><i class="bi bi-truck text-primary me-2"></i><%= supplier.name %></h2>
+                <p class="text-muted small">Detailed information for this supplier.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="/suppliers" class="btn btn-light shadow-sm">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+                <a href="/suppliers/<%= supplier._id %>/edit" class="btn btn-primary shadow-sm">
+                    <i class="bi bi-pencil"></i> Edit Supplier
+                </a>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h5 class="fw-bold border-bottom pb-2 mb-3">Supplier Information</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small fw-bold">Company Name</label>
+                        <p class="fs-5 mb-0"><%= supplier.name %></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small fw-bold">Status</label>
+                        <div>
+                            <span class="badge bg-<%= supplier.status === 'active' ? 'success' : 'danger' %>">
+                                <%= supplier.status ? supplier.status.toUpperCase() : 'UNKNOWN' %>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small fw-bold">Contact Person</label>
+                        <p class="mb-0"><%= supplier.contact || 'N/A' %></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small fw-bold">Lead Time</label>
+                        <p class="mb-0"><%= supplier.leadTimeDays ? supplier.leadTimeDays + ' days' : 'N/A' %></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small fw-bold">Email</label>
+                        <p class="mb-0">
+                            <% if (supplier.email) { %>
+                                <a href="mailto:<%= supplier.email %>"><%= supplier.email %></a>
+                            <% } else { %>
+                                N/A
+                            <% } %>
+                        </p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small fw-bold">Phone</label>
+                        <p class="mb-0"><%= supplier.phone || 'N/A' %></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small fw-bold">Rating</label>
+                        <p class="mb-0">
+                            <% for(let i=1; i<=5; i++) { %>
+                                <i class="bi bi-star-fill <%= i <= supplier.rating ? 'text-warning' : 'text-secondary opacity-25' %>"></i>
+                            <% } %>
+                        </p>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label class="text-muted small fw-bold">Address</label>
+                        <p class="mb-0"><%= supplier.address || 'N/A' %></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-white border-bottom py-3">
+                <h5 class="mb-0 fw-bold">Products from <%= supplier.name %></h5>
+            </div>
+            <div class="card-body p-0">
+                <% if (products && products.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Product Name</th>
+                                    <th>SKU</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% products.forEach(prod => { %>
+                                    <tr>
+                                        <td class="ps-4 fw-medium"><a href="/products/<%= prod._id %>"><%= prod.name %></a></td>
+                                        <td><%= prod.sku %></td>
+                                        <td><%= prod.category ? prod.category.name : 'Uncategorized' %></td>
+                                        <td>Rs.<%= prod.price.toFixed(2) %></td>
+                                        <td>
+                                            <span class="badge bg-<%= prod.quantity <= prod.reorderLevel ? 'danger' : 'success' %>">
+                                                <%= prod.quantity %>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <div class="p-5 text-center text-muted">
+                        <i class="bi bi-box-seam fs-1 mb-3 text-secondary opacity-50"></i>
+                        <h5>No products found</h5>
+                        <p>There are currently no products associated with this supplier.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+    </div>
+</div>

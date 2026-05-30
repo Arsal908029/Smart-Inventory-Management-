@@ -1,0 +1,70 @@
+<div class="flex-between">
+  <h1 class="title">Order Details</h1>
+  <div class="action-links">
+    <a href="/orders/<%= order._id %>/edit" class="btn btn-secondary">Edit Order</a>
+    <a href="/orders" class="btn btn-secondary">Back to Orders</a>
+  </div>
+</div>
+
+<div class="card" style="margin-top: 1.5rem;">
+  <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+    <div>
+      <h2 style="font-size: 1.5rem; color: var(--text); margin-bottom: 0.25rem;">Order #<%= order._id.toString().substring(0, 8).toUpperCase() %></h2>
+      <p style="color: var(--muted); font-size: 0.875rem;">Date: <%= new Date(order.createdAt).toLocaleDateString() %> <%= new Date(order.createdAt).toLocaleTimeString() %></p>
+    </div>
+    <div style="text-align: right;">
+      <span class="badge-<%= order.status === 'Delivered' ? 'success' : (order.status === 'Cancelled' ? 'danger' : 'info') %>">
+        <%= order.status %>
+      </span>
+      <div style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--muted);">
+        Payment: <strong><%= order.paymentStatus %></strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom: 2rem;">
+    <div>
+      <h3 style="font-size: 0.875rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Customer Information</h3>
+      <p style="font-weight: 500;"><%= order.user ? order.user.username : 'Unknown User' %></p>
+      <p style="color: var(--muted);"><%= order.user ? order.user.email : '' %></p>
+    </div>
+    <div style="text-align: right;">
+      <h3 style="font-size: 0.875rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Order Total</h3>
+      <p style="font-size: 2rem; font-weight: bold; color: var(--cyan);">Rs.<%= order.totalAmount.toFixed(2) %></p>
+    </div>
+  </div>
+
+  <h3 style="font-size: 1.125rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">Order Items</h3>
+  
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border);">Product Item</th>
+          <th style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border);">Quantity</th>
+          <th style="padding: 1rem; text-align: right; border-bottom: 1px solid var(--border);">Unit Price</th>
+          <th style="padding: 1rem; text-align: right; border-bottom: 1px solid var(--border);">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% order.items.forEach(item => { %>
+        <tr>
+          <td style="padding: 1rem; border-bottom: 1px solid var(--border);">
+            <div style="font-weight: 500;"><%= item.product ? item.product.name : 'Unknown Product' %></div>
+            <% if (item.product) { %>
+              <div style="font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem;">SKU: <%= item.product.sku %></div>
+            <% } %>
+          </td>
+          <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border);"><%= item.quantity %></td>
+          <td style="padding: 1rem; text-align: right; border-bottom: 1px solid var(--border);">
+            Rs.<%= item.priceAtPurchase.toFixed(2) %>
+          </td>
+          <td style="padding: 1rem; text-align: right; border-bottom: 1px solid var(--border); font-weight: 500;">
+            Rs.<%= (item.quantity * item.priceAtPurchase).toFixed(2) %>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</div>

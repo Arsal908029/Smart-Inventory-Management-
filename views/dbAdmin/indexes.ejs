@@ -1,0 +1,81 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Index Management Panel</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-list-ul"></i> Existing Indexes</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>Collection</th>
+                                <th>Index Name</th>
+                                <th>Keys</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% indexes.forEach(idx => { %>
+                                <tr>
+                                    <td><%= idx.collection %></td>
+                                    <td><span class="badge bg-secondary"><%= idx.name %></span></td>
+                                    <td><code><%= idx.keys %></code></td>
+                                    <td>
+                                        <% if(idx.name !== '_id_') { %>
+                                            <form action="/dbadmin/indexes/drop" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to drop this index?');">
+                                                <input type="hidden" name="collectionName" value="<%= idx.collection %>">
+                                                <input type="hidden" name="indexName" value="<%= idx.name %>">
+                                                <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Drop</button>
+                                            </form>
+                                        <% } else { %>
+                                            <span class="text-muted"><small>Default Index</small></span>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Create New Index</h5>
+            </div>
+            <div class="card-body">
+                <form action="/dbadmin/indexes/create" method="POST">
+                    <div class="mb-3">
+                        <label for="collectionName" class="form-label">Collection</label>
+                        <select class="form-select" id="collectionName" name="collectionName" required>
+                            <option value="users">users</option>
+                            <option value="orders">orders</option>
+                            <option value="products">products</option>
+                            <option value="categories">categories</option>
+                            <option value="invoices">invoices</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fieldName" class="form-label">Field Name</label>
+                        <input type="text" class="form-control" id="fieldName" name="fieldName" placeholder="e.g., email or userId" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="indexType" class="form-label">Index Type</label>
+                        <select class="form-select" id="indexType" name="indexType">
+                            <option value="ascending">Ascending (1)</option>
+                            <option value="hashed">Hashed (for Sharding)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100"><i class="bi bi-plus"></i> Create Index</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

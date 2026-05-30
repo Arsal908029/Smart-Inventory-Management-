@@ -1,0 +1,72 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-truck"></i> Suppliers</h2>
+    <a href="/suppliers/create" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Add Supplier
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Company Name</th>
+                        <th>Contact Person</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Lead Time</th>
+                        <th>Rating</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (suppliers.length === 0) { %>
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">No suppliers found.</td>
+                        </tr>
+                    <% } %>
+                    <% suppliers.forEach(supplier => { %>
+                        <tr>
+                            <td class="fw-bold"><%= supplier.name %></td>
+                            <td><%= supplier.contact %></td>
+                            <td>
+                                <% if (supplier.email) { %>
+                                    <a href="mailto:<%= supplier.email %>"><%= supplier.email %></a>
+                                <% } else { %>
+                                    <span class="text-muted small">N/A</span>
+                                <% } %>
+                            </td>
+                            <td><%- supplier.phone ? supplier.phone : '<span class="text-muted small">N/A</span>' %></td>
+                            <td><%= supplier.leadTimeDays || 'N/A' %> days</td>
+                            <td>
+                                <% for(let i=1; i<=5; i++) { %>
+                                    <i class="bi bi-star-fill <%= i <= (supplier.rating || 0) ? 'text-warning' : 'text-secondary opacity-25' %>"></i>
+                                <% } %>
+                            </td>
+                            <td>
+                                <span class="badge bg-<%= supplier.status === 'active' ? 'success' : 'danger' %>">
+                                    <%= supplier.status ? supplier.status.toUpperCase() : 'UNKNOWN' %>
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <a href="/suppliers/<%= supplier._id %>" class="btn btn-sm btn-outline-info" title="View">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="/suppliers/<%= supplier._id %>/edit" class="btn btn-sm btn-outline-primary" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form action="/suppliers/<%= supplier._id %>?_method=DELETE" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this supplier?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

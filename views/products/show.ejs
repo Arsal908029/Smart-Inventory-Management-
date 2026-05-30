@@ -1,0 +1,54 @@
+<div class="flex-between">
+  <h1 class="title">Product Details</h1>
+  <div class="action-links">
+    <a href="/products/<%= product._id %>/edit" class="btn btn-secondary">Edit Product</a>
+    <a href="/products" class="btn btn-secondary">Back to List</a>
+  </div>
+</div>
+
+<div class="card" style="margin-top: 1.5rem; max-width: 800px;">
+  <div class="grid-2">
+    <div>
+      <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;"><%= product.name %></h2>
+      <div style="display: inline-block; background: rgba(255,255,255,0.1); padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.875rem; font-family: monospace; margin-bottom: 1rem;">
+        SKU: <%= product.sku %>
+      </div>
+      
+      <div style="margin-top: 1rem;">
+        <div style="font-size: 1.5rem; font-weight: bold; color: var(--cyan);">Rs.<%= product.price.toFixed(2) %></div>
+        <div style="color: var(--muted); font-size: 0.875rem; margin-top: 0.25rem;">Current Price</div>
+      </div>
+    </div>
+    
+    <div style="text-align: right;">
+      <div style="margin-bottom: 1rem;">
+        <div style="font-size: 0.875rem; color: var(--muted); margin-bottom: 0.25rem;">Stock Level</div>
+        <div style="font-size: 2rem; font-weight: bold;">
+          <span style="color: <%= product.quantity > 10 ? '#10b981' : '#ef4444' %>">
+            <%= product.quantity %>
+          </span>
+        </div>
+      </div>
+      
+      <div>
+        <span class="badge-<%= product.quantity > 0 ? 'success' : 'danger' %>">
+          <%= product.quantity > 0 ? 'In Stock' : 'Out of Stock' %>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+    <h3 style="font-size: 1.125rem; margin-bottom: 0.75rem;">Description</h3>
+    <% if (product.description) { %>
+      <p style="color: var(--muted); white-space: pre-line;"><%= product.description %></p>
+    <% } else { %>
+      <p style="color: var(--muted); font-style: italic;">No description available.</p>
+    <% } %>
+    
+    <div style="margin-top: 1.5rem; color: var(--muted); font-size: 0.875rem;">
+      <p>Category: <strong><%= product.category ? product.category.name : 'Uncategorized' %></strong></p>
+      <p style="margin-top: 0.5rem;">Added: <%= new Date(product.createdAt).toLocaleDateString() %></p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Database Connection Module</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-hdd-network"></i> Connection Status</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="spinner-grow text-success me-3" role="status" style="width: 1.5rem; height: 1.5rem;">
+                        <span class="visually-hidden">Connected</span>
+                    </div>
+                    <h4 class="mb-0 text-success"><%= status %></h4>
+                </div>
+                <hr>
+                <p><strong>Host:</strong> <%= host %></p>
+                <p><strong>Database Name:</strong> <%= name %></p>
+                <p><strong>Port:</strong> <%= port %></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="bi bi-gear"></i> Connection Settings</h5>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="connectionString" class="form-label">Connection String (URI)</label>
+                        <input type="text" class="form-control" id="connectionString" value="mongodb://localhost:27017/<%= name %>" readonly>
+                        <div class="form-text">Currently using environment variables for connection.</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-success" disabled>Connect</button>
+                        <button type="button" class="btn btn-danger" disabled>Disconnect</button>
+                        <small class="text-muted ms-2 align-self-center">(Simulated GUI - connection managed by Express server)</small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

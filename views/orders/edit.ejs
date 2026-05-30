@@ -1,0 +1,50 @@
+<div class="flex-between">
+  <h1 class="title">Edit Order Status</h1>
+  <div class="action-links">
+    <a href="/orders/<%= order._id %>" class="btn btn-secondary">Cancel</a>
+  </div>
+</div>
+
+<div class="card" style="max-width: 600px;">
+  <form action="/orders/<%= order._id %>?_method=PUT" method="POST">
+    <div class="form-group">
+      <label class="form-label">Customer</label>
+      <input type="text" class="form-control" value="<%= order.user ? order.user.username : 'Unknown' %>" disabled style="background-color: rgba(255,255,255,0.02); color: var(--muted);">
+    </div>
+
+    <div class="form-group">
+      <label for="status" class="form-label">Order Status</label>
+      <select id="status" name="status" class="form-control">
+        <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+        <option value="Processing" <%= order.status === 'Processing' ? 'selected' : '' %>>Processing</option>
+        <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+        <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+        <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="paymentStatus" class="form-label">Payment Status</label>
+      <select id="paymentStatus" name="paymentStatus" class="form-control">
+        <option value="Pending" <%= order.paymentStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
+        <option value="Completed" <%= order.paymentStatus === 'Completed' ? 'selected' : '' %>>Completed</option>
+        <option value="Failed" <%= order.paymentStatus === 'Failed' ? 'selected' : '' %>>Failed</option>
+      </select>
+    </div>
+
+    <div class="form-group" style="margin-top: 2rem;">
+      <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">Order Items Summary</h3>
+      <ul style="list-style: none; padding: 0; margin-bottom: 1rem; border: 1px solid var(--border); border-radius: var(--radius);">
+        <% order.items.forEach(item => { %>
+          <li style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;">
+            <span><%= item.product ? item.product.name : 'Unknown' %> (x<%= item.quantity %>)</span>
+            <span>Rs.<%= (item.quantity * item.priceAtPurchase).toFixed(2) %></span>
+          </li>
+        <% }); %>
+      </ul>
+      <small style="color: var(--muted);">Note: Modifying product lines directly via this form is not currently supported.</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; margin-top: 1rem;">Update Order</button>
+  </form>
+</div>

@@ -1,0 +1,59 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Sharding Status Panel</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="bi bi-hdd-stack"></i> Cluster Sharding Configuration</h5>
+            </div>
+            <div class="card-body">
+                <% if(isSharded) { %>
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle"></i> <strong>Sharding is Enabled</strong> on this cluster.
+                    </div>
+                    <h6>Shards Detected:</h6>
+                    <pre class="bg-light p-3 rounded border"><code><%= shardingStatus %></code></pre>
+                <% } else { %>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> <strong>Sharding Not Configured or Role Unauthorized</strong>
+                        <p class="mb-0 mt-2"><%= shardingStatus %></p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mb-4 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-terminal"></i> Sharding Implementation Guide</h5>
+            </div>
+            <div class="card-body">
+                <h5>1. Local Replica Set Setup (mongosh)</h5>
+                <pre class="bg-dark text-light p-3 rounded"><code>// Start Config Servers
+mongod --configsvr --replSet configReplSet --port 27019 --dbpath /data/config1 --bind_ip localhost
+
+// Start Shards
+mongod --shardsvr --replSet shard1ReplSet --port 27022 --dbpath /data/shard1 --bind_ip localhost
+mongod --shardsvr --replSet shard2ReplSet --port 27023 --dbpath /data/shard2 --bind_ip localhost
+
+// Start Mongos Router
+mongos --configdb configReplSet/localhost:27019 --port 27017 --bind_ip localhost</code></pre>
+
+                <h5 class="mt-4">2. Enable Database Sharding</h5>
+                <pre class="bg-dark text-light p-3 rounded"><code>sh.enableSharding("inventory_db")</code></pre>
+
+                <h5 class="mt-4">3. Hashed Sharding (Users Collection)</h5>
+                <p>Ensures even distribution of user accounts across shards.</p>
+                <pre class="bg-dark text-light p-3 rounded"><code>db.users.createIndex({ userId: "hashed" })
+sh.shardCollection("inventory_db.users", { userId: "hashed" })</code></pre>
+
+                <h5 class="mt-4">4. Range Sharding (Orders Collection)</h5>
+                <p>Ensures that query ranges based on dates can target specific shards efficiently.</p>
+                <pre class="bg-dark text-light p-3 rounded"><code>db.orders.createIndex({ orderDate: 1 })
+sh.shardCollection("inventory_db.orders", { orderDate: 1 })</code></pre>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <% if (user) { %>
+            <button class="btn btn-link text-white me-2" id="sidebarToggle">
+                <i class="bi bi-list fs-4"></i>
+            </button>
+        <% } %>
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <i class="bi bi-box-seam me-2"></i> Smart Inventory
+            <% if (typeof dbState !== 'undefined') { %>
+                <span class="badge rounded-pill <%= dbState === 1 ? 'bg-success' : 'bg-danger' %> ms-3 fs-6" title="<%= dbState === 1 ? 'Connected to MongoDB' : 'Database Disconnected' %>">
+                    <i class="bi <%= dbState === 1 ? 'bi-wifi' : 'bi-wifi-off' %>"></i> <%= dbState === 1 ? 'Connected' : 'Disconnected' %>
+                </span>
+            <% } %>
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <% if (user) { %>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> <%= user.name %>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/user/profile"><i class="bi bi-person"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="/user/settings"><i class="bi bi-gear"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</nav>

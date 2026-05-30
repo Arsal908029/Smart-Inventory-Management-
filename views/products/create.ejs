@@ -1,0 +1,312 @@
+<div class="row justify-content-center">
+    <div class="col-xl-10">
+        <div class="d-flex justify-content-between align-items-center mb-4 animate-up">
+            <div>
+                <h2 class="fw-bold mb-1">Create New Product</h2>
+                <p class="text-muted small">Fill in the details below to add a new item to your inventory.</p>
+            </div>
+            <a href="/products" class="btn btn-light shadow-sm">
+                <i class="bi bi-arrow-left"></i> Back to Inventory
+            </a>
+        </div>
+
+        <div class="card shadow-sm animate-up">
+            <div class="card-body p-0">
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-danger m-4 alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-octagon me-2"></i> <%= error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+
+                <form action="/products" method="POST" id="productForm">
+                    <!-- Custom Tab Header -->
+                    <ul class="nav nav-tabs nav-fill bg-body-tertiary border-bottom" id="productTabs" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active py-3 fw-bold" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button">
+                                <i class="bi bi-info-circle me-2"></i> General
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link py-3 fw-bold" id="pricing-tab" data-bs-toggle="tab" data-bs-target="#pricing" type="button">
+                                <i class="bi bi-currency-dollar me-2"></i> Pricing & Stock
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link py-3 fw-bold" id="media-tab" data-bs-toggle="tab" data-bs-target="#media" type="button">
+                                <i class="bi bi-image me-2"></i> Media
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link py-3 fw-bold" id="advanced-tab" data-bs-toggle="tab" data-bs-target="#advanced" type="button">
+                                <i class="bi bi-gear me-2"></i> Advanced
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link py-3 fw-bold" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo" type="button">
+                                <i class="bi bi-search me-2"></i> SEO
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content p-4" id="productTabsContent">
+                        <!-- General Info -->
+                        <div class="tab-pane fade show active" id="general" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <label class="form-label fw-bold small text-uppercase">Product Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-lg" name="name" required value="<%= product ? product.name : '' %>" placeholder="e.g., Wireless Noise Cancelling Headphones">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold small text-uppercase">SKU <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-lg text-uppercase" name="sku" required value="<%= product ? product.sku : '' %>" placeholder="e.g., HEAD-WRLS-001">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small text-uppercase">Category <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="category" required>
+                                        <option value="" disabled <%= !product ? 'selected' : '' %>>Select a category...</option>
+                                        <% categories.forEach(cat => { %>
+                                            <option value="<%= cat._id %>" <%= product && product.category == cat._id ? 'selected' : '' %>><%= cat.name %></option>
+                                        <% }) %>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small text-uppercase">Tags (Comma separated)</label>
+                                    <input type="text" class="form-control" name="tags" value="<%= product && product.tags ? product.tags.join(', ') : '' %>" placeholder="electronics, audio, wireless">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold small text-uppercase">Description</label>
+                                    <textarea class="form-control" name="description" rows="5" placeholder="Detailed product description..."><%= product ? product.description : '' %></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pricing & Stock -->
+                        <div class="tab-pane fade" id="pricing" role="tabpanel">
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <div class="card bg-body-tertiary border-0">
+                                        <div class="card-body">
+                                            <label class="form-label fw-bold small text-uppercase">Selling Price <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-body">Rs.</span>
+                                                <input type="number" step="0.01" class="form-control" name="price" required value="<%= product ? product.price : '' %>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-body-tertiary border-0">
+                                        <div class="card-body">
+                                            <label class="form-label fw-bold small text-uppercase">Cost Price <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-body">Rs.</span>
+                                                <input type="number" step="0.01" class="form-control" name="cost" required value="<%= product ? product.cost : '' %>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card bg-body-tertiary border-0">
+                                        <div class="card-body">
+                                            <label class="form-label fw-bold small text-uppercase">Profit Margin</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control bg-body" id="marginDisplay" readonly value="0.00">
+                                                <span class="input-group-text bg-body">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold small text-uppercase">Initial Stock <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" name="quantity" required value="<%= product ? product.quantity : 0 %>">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold small text-uppercase">Low Stock Alert Level</label>
+                                    <input type="number" class="form-control" name="reorderLevel" value="<%= product ? product.reorderLevel : 10 %>">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold small text-uppercase">Reorder Quantity</label>
+                                    <input type="number" class="form-control" name="reorderQuantity" value="<%= product ? product.reorderQuantity : 50 %>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Media -->
+                        <div class="tab-pane fade" id="media" role="tabpanel">
+                            <div class="upload-zone text-center p-5 border border-dashed rounded-3 bg-body-tertiary mb-4">
+                                <i class="bi bi-cloud-arrow-up fs-1 text-primary"></i>
+                                <h5 class="mt-3 fw-bold">Upload Product Images</h5>
+                                <p class="text-muted small">Drag and drop images here, or click to browse files.</p>
+                                <input type="file" class="d-none" id="imageUpload" multiple accept="image/*">
+                                <button type="button" class="btn btn-primary" onclick="document.getElementById('imageUpload').click()">Select Files</button>
+                            </div>
+                            <div class="row g-3" id="imagePreviewContainer">
+                                <!-- Previews will appear here -->
+                            </div>
+                            <div class="mt-4">
+                                <label class="form-label fw-bold small text-uppercase">Or Image URLs (Comma separated)</label>
+                                <textarea class="form-control" name="imageUrls" placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Advanced -->
+                        <div class="tab-pane fade" id="advanced" role="tabpanel">
+                            <div class="row g-4">
+                                <div class="col-md-12">
+                                    <h6 class="fw-bold border-bottom pb-2">Physical Attributes</h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label small">Weight (kg)</label>
+                                            <input type="number" step="0.01" class="form-control" name="weight" value="<%= product ? product.weight?.value : '' %>">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small">Length (cm)</label>
+                                            <input type="number" step="0.01" class="form-control" name="length" value="<%= product ? product.dimensions?.length : '' %>">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small">Width (cm)</label>
+                                            <input type="number" step="0.01" class="form-control" name="width" value="<%= product ? product.dimensions?.width : '' %>">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small">Height (cm)</label>
+                                            <input type="number" step="0.01" class="form-control" name="height" value="<%= product ? product.dimensions?.height : '' %>">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <h6 class="fw-bold border-bottom pb-2 mt-3">Supplier Information</h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <label class="form-label small">Primary Supplier</label>
+                                            <select class="form-select" name="supplier">
+                                                <option value="">-- No Supplier Assigned --</option>
+                                                <% suppliers.forEach(sup => { %>
+                                                    <option value="<%= sup._id %>" <%= product && product.suppliers && product.suppliers.includes(sup._id) ? 'selected' : '' %>><%= sup.name %> (Lead Time: <%= sup.leadTimeDays %> days)</option>
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SEO -->
+                        <div class="tab-pane fade" id="seo" role="tabpanel">
+                            <div class="card border-0 bg-body-tertiary p-4 mb-4">
+                                <h6 class="fw-bold mb-3">Search Engine Preview</h6>
+                                <div class="seo-preview p-3 bg-body rounded shadow-sm">
+                                    <div class="text-primary fs-5 text-truncate" id="seoTitlePreview">New Product | Smart Inventory</div>
+                                    <div class="text-success small text-truncate" id="seoUrlPreview">https://inventory.com/products/new-product</div>
+                                    <div class="text-muted small" id="seoDescPreview">Add a meta description to see how this product will appear in search results.</div>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold small text-uppercase">Meta Title</label>
+                                    <input type="text" class="form-control" name="metaTitle" id="metaTitleInput" placeholder="SEO Title">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold small text-uppercase">Meta Description</label>
+                                    <textarea class="form-control" name="metaDescription" id="metaDescInput" rows="3" placeholder="Brief summary for search engines"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold small text-uppercase">URL Slug</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-body">/products/</span>
+                                        <input type="text" class="form-control" name="slug" id="slugInput" placeholder="product-url-slug">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-body border-top p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="text-muted small mb-0"><span class="text-danger">*</span> Required fields</p>
+                            <div class="d-flex gap-2">
+                                <a href="/products" class="btn btn-light">Discard Changes</a>
+                                <button type="submit" class="btn btn-primary px-5 shadow-sm">
+                                    <i class="bi bi-check-lg"></i> Save Product
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-tabs .nav-link {
+        border: none;
+        color: var(--text-muted);
+        border-bottom: 2px solid transparent;
+    }
+    .nav-tabs .nav-link:hover {
+        border-bottom: 2px solid var(--border-color);
+        background: transparent;
+    }
+    .nav-tabs .nav-link.active {
+        color: var(--primary);
+        border-bottom: 2px solid var(--primary);
+        background: white;
+    }
+    .border-dashed { border-style: dashed !important; border-width: 2px !important; }
+    .seo-preview { border-left: 4px solid #4285f4; }
+</style>
+
+<script>
+    // Profit Margin Calculator
+    const priceInput = document.querySelector('input[name="price"]');
+    const costInput = document.querySelector('input[name="cost"]');
+    const marginDisplay = document.getElementById('marginDisplay');
+
+    function calculateMargin() {
+        const price = parseFloat(priceInput.value) || 0;
+        const cost = parseFloat(costInput.value) || 0;
+        if (price > 0) {
+            const margin = ((price - cost) / price) * 100;
+            marginDisplay.value = margin.toFixed(2);
+            marginDisplay.parentElement.nextElementSibling?.classList.toggle('text-danger', margin < 0);
+        } else {
+            marginDisplay.value = '0.00';
+        }
+    }
+
+    priceInput.addEventListener('input', calculateMargin);
+    costInput.addEventListener('input', calculateMargin);
+
+    // SEO Preview Logic
+    const nameInput = document.querySelector('input[name="name"]');
+    const metaTitleInput = document.getElementById('metaTitleInput');
+    const metaDescInput = document.getElementById('metaDescInput');
+    const slugInput = document.getElementById('slugInput');
+
+    const seoTitlePreview = document.getElementById('seoTitlePreview');
+    const seoUrlPreview = document.getElementById('seoUrlPreview');
+    const seoDescPreview = document.getElementById('seoDescPreview');
+
+    function updateSEO() {
+        const title = metaTitleInput.value || nameInput.value || 'New Product';
+        const slug = slugInput.value || (nameInput.value ? nameInput.value.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') : 'new-product');
+        const desc = metaDescInput.value || 'Add a meta description to see how this product will appear in search results.';
+
+        seoTitlePreview.innerText = title + ' | Smart Inventory';
+        seoUrlPreview.innerText = 'https://inventory.com/products/' + slug;
+        seoDescPreview.innerText = desc;
+        
+        if (!slugInput.value && nameInput.value) {
+            slugInput.placeholder = slug;
+        }
+        if (!metaTitleInput.value && nameInput.value) {
+            metaTitleInput.placeholder = nameInput.value;
+        }
+    }
+
+    nameInput.addEventListener('input', updateSEO);
+    metaTitleInput.addEventListener('input', updateSEO);
+    metaDescInput.addEventListener('input', updateSEO);
+    slugInput.addEventListener('input', updateSEO);
+</script>

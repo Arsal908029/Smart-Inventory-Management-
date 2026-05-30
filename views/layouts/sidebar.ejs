@@ -1,0 +1,119 @@
+<div class="sidebar">
+    <div class="sidebar-header border-bottom border-secondary border-opacity-25 py-3 px-4 d-flex align-items-center gap-2">
+        <i class="bi bi-box-seam fs-4 text-primary"></i>
+        <h5 class="mb-0 fw-bold text-white tracking-wide" style="font-size: 1.1rem; letter-spacing: 0.5px;">Smart Inventory</h5>
+    </div>
+    
+    <ul class="nav flex-column sidebar-menu py-3" style="max-height: calc(100vh - 65px); overflow-y: auto; overflow-x: hidden; flex-wrap: nowrap !important; padding-bottom: 3rem;">
+        
+        <!-- Category: MAIN MENU -->
+        <li class="sidebar-heading px-4 pt-2 pb-1 text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 1px; color: #64748b !important;">
+            Main Menu
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/dashboard">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/products">
+                <i class="bi bi-box"></i> Products
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/categories">
+                <i class="bi bi-tags"></i> Categories
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/suppliers">
+                <i class="bi bi-truck"></i> Suppliers
+            </a>
+        </li>
+        
+        <!-- Category: OPERATIONS -->
+        <li class="sidebar-heading px-4 pt-3 pb-1 text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 1px; color: #64748b !important;">
+            Operations
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/orders">
+                <i class="bi bi-cart"></i> Orders
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/invoices">
+                <i class="bi bi-receipt"></i> Invoices
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/transactions">
+                <i class="bi bi-arrow-left-right"></i> Transactions
+            </a>
+        </li>
+        
+        <!-- Category: ANALYTICS -->
+        <li class="sidebar-heading px-4 pt-3 pb-1 text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 1px; color: #64748b !important;">
+            Analytics
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/aggregation/report">
+                <i class="bi bi-graph-up"></i> Reports & Analytics
+            </a>
+        </li>
+        
+        <!-- Category: DATABASE ADMIN -->
+        <li class="sidebar-heading px-4 pt-3 pb-1 text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 1px; color: #64748b !important;">
+            Database Admin
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/dbadmin/connection">
+                <i class="bi bi-server"></i> Connection
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/dbadmin/replset">
+                <i class="bi bi-hdd-network"></i> Replica Set Status
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/dbadmin/indexes">
+                <i class="bi bi-list-columns-reverse"></i> Indexes
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/dbadmin/transactions">
+                <i class="bi bi-shield-check"></i> Transactions Demo
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/dbadmin/sharding">
+                <i class="bi bi-database-gear"></i> Sharding Guide
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/sharding/status">
+                <i class="bi bi-hdd-stack"></i> Sharding Status
+            </a>
+        </li>
+        
+        <!-- Category: USER OPTIONS -->
+        <li class="sidebar-heading px-4 pt-3 pb-1 text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 1px; color: #64748b !important;">
+            User Account
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/user/profile">
+                <i class="bi bi-person-circle"></i> Profile
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-secondary" href="/user/settings">
+                <i class="bi bi-gear-fill"></i> Settings
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link py-2 px-4 d-flex align-items-center gap-3 text-danger hover-logout" href="/logout">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </li>
+    </ul>
+</div>

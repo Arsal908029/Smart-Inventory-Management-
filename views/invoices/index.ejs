@@ -1,0 +1,55 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-receipt"></i> Invoices</h2>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Date</th>
+                        <th>Order Ref</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (invoices.length === 0) { %>
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">No invoices found. Invoices are generated automatically when an order is completed.</td>
+                        </tr>
+                    <% } %>
+                    <% invoices.forEach(invoice => { %>
+                        <tr>
+                            <td class="fw-bold"><%= invoice.invoiceNumber || 'INV-TEMP' %></td>
+                            <td><%= invoice.createdAt ? new Date(invoice.createdAt).toLocaleDateString() : 'N/A' %></td>
+                            <td>
+                                <% if (invoice.order) { %>
+                                    <a href="/orders/<%= invoice.order._id %>" class="text-decoration-none"><%= invoice.order.orderNumber || 'ORD-REF' %></a>
+                                <% } else { %>
+                                    <span class="text-muted">Order Deleted</span>
+                                <% } %>
+                            </td>
+                            <td><%= (invoice.order && invoice.order.customer) ? invoice.order.customer.name : 'Guest' %></td>
+                            <td class="fw-bold">Rs.<%= (invoice.total || invoice.amount || 0).toLocaleString() %></td>
+                            <td>
+                                <span class="badge bg-<%= invoice.status === 'paid' ? 'success' : invoice.status === 'unpaid' ? 'warning text-dark' : 'danger' %>">
+                                    <%= (invoice.status || 'unpaid').toUpperCase() %>
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <a href="/invoices/<%= invoice._id %>" class="btn btn-sm btn-outline-primary" title="View Invoice">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

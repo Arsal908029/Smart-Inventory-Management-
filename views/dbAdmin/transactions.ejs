@@ -1,0 +1,99 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Transaction Demo Panel</h1>
+</div>
+
+<% if(error) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>
+
+<% if(success) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!</strong> <%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="bi bi-arrow-left-right"></i> Multi-Collection Transaction Demo (Points Transfer)</h5>
+            </div>
+            <div class="card-body">
+                <p>This demo executes a Multi-Document ACID Transaction across the <code>users</code> and <code>transactionlogs</code> collections.</p>
+                <form action="/dbadmin/transactions/transfer" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Sender User</label>
+                        <select name="senderId" class="form-select" required>
+                            <% users.forEach(user => { %>
+                                <option value="<%= user._id %>"><%= user.name %> (Points: <%= user.points %>)</option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Receiver User</label>
+                        <select name="receiverId" class="form-select" required>
+                            <% users.forEach(user => { %>
+                                <option value="<%= user._id %>"><%= user.name %> (Points: <%= user.points %>)</option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Points to Transfer</label>
+                        <input type="number" name="points" class="form-control" value="10" min="1" required>
+                    </div>
+                    <div class="mb-3 form-check text-danger">
+                        <input type="checkbox" class="form-check-input" id="simulateError" name="simulateError" value="true">
+                        <label class="form-check-label" for="simulateError"><strong>Simulate Error (Force Rollback)</strong> - Fail midway through transaction to show ACID atomicity</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-play-circle"></i> Execute Transaction</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-dark">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Supported Scenarios</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>Write-Write:</strong> Navigate to <a href="/orders/create">Orders -> Create</a>. Creating an order modifies Stock History, decreases Product Quantity, and creates an Order within one transaction.
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Read-Write Validation:</strong> Navigate to <a href="/orders">Orders</a> and cancel or complete an order. The system validates the read status before performing multiple collection writes in a transaction.
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Multi-Collection:</strong> Use the panel to the left. It transfers points between two users and creates an audit log, committing only if all succeed.
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Concurrent Execution:</strong> MongoDB automatically locks documents during transactions to ensure snapshot isolation and prevent dirty reads.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card shadow-sm mb-4 border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Concurrent Transaction Test (WriteConflict)</h5>
+            </div>
+            <div class="card-body">
+                <p>This test simulates two simultaneous transactions attempting to deduct stock from the exact same product. Because MongoDB uses <strong>Snapshot Isolation</strong>, one transaction will succeed, and the second will detect a <code>WriteConflict</code> and automatically safely abort and rollback its changes to prevent dirty reads and inconsistent state.</p>
+                <form action="/dbadmin/transactions/concurrent" method="POST">
+                    <button type="submit" class="btn btn-outline-danger px-4">
+                        <i class="bi bi-play-fill"></i> Run Promise.all Concurrent Test
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

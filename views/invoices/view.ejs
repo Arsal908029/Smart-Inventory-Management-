@@ -1,0 +1,155 @@
+<div class="invoice-container py-5 d-print-block">
+    <div class="d-flex justify-content-between align-items-center mb-4 d-print-none animate-up">
+        <a href="/orders/<%= invoice.order._id %>" class="btn btn-light shadow-sm">
+            <i class="bi bi-arrow-left"></i> Back to Order
+        </a>
+        <div class="d-flex gap-2">
+            <button onclick="window.print()" class="btn btn-primary shadow-sm">
+                <i class="bi bi-printer"></i> Print Invoice
+            </button>
+            <button class="btn btn-outline-primary shadow-sm">
+                <i class="bi bi-download"></i> PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="card shadow-lg border-0 invoice-card animate-up">
+        <div class="card-body p-5">
+            <!-- Header -->
+            <div class="row mb-5">
+                <div class="col-sm-6">
+                    <div class="d-flex align-items-center gap-2 mb-4">
+                        <div class="bg-primary text-white p-2 rounded-3">
+                            <i class="bi bi-box-seam fs-3"></i>
+                        </div>
+                        <h2 class="fw-bold mb-0 text-primary">Smart Inventory</h2>
+                    </div>
+                    <div class="text-muted small">
+                        <p class="mb-0 fw-bold text-body">Smart Inventory Solutions Ltd.</p>
+                        <p class="mb-0">123 Business Avenue, Suite 500</p>
+                        <p class="mb-0">New York, NY 10001, USA</p>
+                        <p class="mb-0">Tel: +1 (800) 555-0123</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 text-sm-end mt-4 mt-sm-0">
+                    <h1 class="fw-bold text-uppercase text-muted display-6 mb-3">Invoice</h1>
+                    <div class="d-inline-block text-start">
+                        <div class="row g-2 mb-1">
+                            <div class="col-6 text-muted small">Invoice #:</div>
+                            <div class="col-6 fw-bold"><%= invoice.invoiceNumber %></div>
+                        </div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-6 text-muted small">Date:</div>
+                            <div class="col-6 fw-bold"><%= invoice.createdAt ? new Date(invoice.createdAt).toLocaleDateString('en-US', { dateStyle: 'long' }) : 'N/A' %></div>
+                        </div>
+                        <div class="row g-2 mb-1">
+                            <div class="col-6 text-muted small">Order Ref:</div>
+                            <div class="col-6 fw-bold">#<%= order.orderNumber || 'N/A' %></div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6 text-muted small">Status:</div>
+                            <div class="col-6">
+                                <span class="badge <%= invoice.status === 'paid' ? 'bg-success' : 'bg-warning text-dark' %> text-uppercase px-3">
+                                    <%= invoice.status %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-5 opacity-10">
+
+            <!-- Billing Details -->
+            <div class="row mb-5">
+                <div class="col-sm-6">
+                    <h6 class="text-uppercase fw-bold text-muted small mb-3">Bill To:</h6>
+                    <h5 class="fw-bold mb-1"><%= (order.customer && order.customer.name) ? order.customer.name : 'Guest' %></h5>
+                    <p class="text-muted mb-0"><%= (order.customer && order.customer.email) ? order.customer.email : 'N/A' %></p>
+                    <p class="text-muted mb-0"><%= (order.customer && order.customer.phone) ? order.customer.phone : 'N/A' %></p>
+                    <p class="text-muted mb-0"><%= order.customer ? order.customer.address : 'N/A' %></p>
+                </div>
+                <div class="col-sm-6 text-sm-end mt-4 mt-sm-0">
+                    <h6 class="text-uppercase fw-bold text-muted small mb-3">Payment Info:</h6>
+                    <p class="mb-0"><span class="text-muted">Method:</span> <span class="fw-bold"><%= (order.paymentMethod || 'N/A').replace('_', ' ').toUpperCase() %></span></p>
+                    <% if (invoice.paidAt) { %>
+                        <p class="mb-0"><span class="text-muted">Paid At:</span> <span class="fw-bold"><%= new Date(invoice.paidAt).toLocaleString() %></span></p>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Items Table -->
+            <div class="table-responsive mb-5">
+                <table class="table table-hover align-middle">
+                    <thead class="bg-body-tertiary">
+                        <tr>
+                            <th class="ps-4 border-0">Description</th>
+                            <th class="border-0">SKU</th>
+                            <th class="text-center border-0">Price</th>
+                            <th class="text-center border-0">Qty</th>
+                            <th class="text-end pe-4 border-0">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                        <% order.items.forEach(item => { %>
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bold"><%= item.name %></div>
+                                </td>
+                                <td class="text-muted small"><%= item.sku %></td>
+                                <td class="text-center">Rs.<%= (item.price || 0).toLocaleString(undefined, {minimumFractionDigits: 2}) %></td>
+                                <td class="text-center"><%= item.quantity || 0 %></td>
+                                <td class="text-end pe-4 fw-bold">Rs.<%= ((item.price || 0) * (item.quantity || 0)).toLocaleString(undefined, {minimumFractionDigits: 2}) %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Totals -->
+            <div class="row justify-content-end">
+                <div class="col-sm-5">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Subtotal:</span>
+                        <span class="fw-bold">Rs.<%= (order.subtotal || 0).toLocaleString(undefined, {minimumFractionDigits: 2}) %></span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Tax (10%):</span>
+                        <span class="fw-bold">Rs.<%= (order.tax || 0).toLocaleString(undefined, {minimumFractionDigits: 2}) %></span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                        <span class="text-muted">Shipping:</span>
+                        <span class="fw-bold">Rs.<%= (order.shipping || 0).toLocaleString(undefined, {minimumFractionDigits: 2}) %></span>
+                    </div>
+                    <div class="d-flex justify-content-between fs-4 text-primary">
+                        <span class="fw-bold">Total:</span>
+                        <span class="fw-bold">Rs.<%= (order.total || 0).toLocaleString(undefined, {minimumFractionDigits: 2}) %></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-5 pt-5 border-top text-center text-muted small">
+                <p class="mb-1">Payment is due within 30 days. Thank you for choosing Smart Inventory.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="https://smartinventory.com" class="text-decoration-none text-muted">www.smartinventory.com</a>
+                    <span>|</span>
+                    <span>support@smartinventory.com</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .invoice-card {
+        border-radius: 1.5rem;
+        overflow: hidden;
+    }
+    @media print {
+        body { background: white !important; }
+        .invoice-card { box-shadow: none !important; border: 1px solid #eee !important; }
+        .sidebar, .navbar, .btn, .d-print-none { display: none !important; }
+        .main-content { margin-left: 0 !important; padding: 0 !important; }
+    }
+</style>

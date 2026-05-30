@@ -1,0 +1,89 @@
+<div class="auth-container d-flex align-items-center justify-content-center min-vh-100">
+    <!-- Animated background elements -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    
+    <div class="auth-card-wrapper animate-up">
+        <div class="auth-card">
+            <div class="auth-card-body">
+                <!-- Branding / Logo section -->
+                <div class="auth-header text-center mb-4">
+                    <div class="logo-icon-wrapper mb-3">
+                        <i class="bi bi-box-seam logo-icon"></i>
+                    </div>
+                    <h2 class="auth-title">Smart Inventory</h2>
+                    <p class="auth-subtitle">Welcome back! Please login to your account.</p>
+                    
+                    <% if (typeof dbState !== 'undefined') { %>
+                        <div class="db-status-pill d-inline-flex align-items-center gap-1 mt-2">
+                            <span class="status-dot <%= dbState === 1 ? 'online' : 'offline' %>"></span>
+                            <span class="status-text"><%= dbState === 1 ? 'Connected' : 'Offline Mode' %></span>
+                        </div>
+                    <% } %>
+                </div>
+
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-danger-custom d-flex align-items-center gap-2 mb-4 animate-shake" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <div><%= error %></div>
+                    </div>
+                <% } %>
+                
+                <form action="/login" method="POST" class="auth-form">
+                    <div class="form-group-custom mb-3">
+                        <label for="email" class="form-label-custom">Email Address</label>
+                        <div class="input-group-custom">
+                            <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                            <input type="email" class="form-input" id="email" name="email" placeholder="name@company.com" required autocomplete="email">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group-custom mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="password" class="form-label-custom">Password</label>
+                        </div>
+                        <div class="input-group-custom">
+                            <span class="input-icon"><i class="bi bi-lock"></i></span>
+                            <input type="password" class="form-input" id="password" name="password" placeholder="••••••••" required>
+                            <button type="button" class="password-toggle-btn" id="togglePassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-auth-submit w-100">
+                        <span>Sign In</span>
+                        <i class="bi bi-arrow-right-short submit-arrow"></i>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="auth-card-footer text-center">
+                <p class="footer-auth-text mb-0">Don't have an account yet? <a href="/register" class="auth-link">Create one now</a></p>
+            </div>
+        </div>
+        <p class="auth-copyright-text text-center mt-4">&copy; <%= currentYear %> Smart Inventory System. All rights reserved.</p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+        
+        if (togglePassword && password) {
+            togglePassword.addEventListener('click', () => {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                
+                // Toggle the eye / eye-slash icon
+                const icon = togglePassword.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('bi-eye');
+                    icon.classList.toggle('bi-eye-slash');
+                }
+            });
+        }
+    });
+</script>

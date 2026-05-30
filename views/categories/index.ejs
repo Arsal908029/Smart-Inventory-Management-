@@ -1,0 +1,111 @@
+<div class="category-wrapper">
+    <div class="d-flex justify-content-between align-items-center mb-5 animate-up">
+        <div>
+            <h1 class="fw-bold mb-1">Category Management</h1>
+            <p class="text-muted mb-0">Organize your products into logical hierarchical structures.</p>
+        </div>
+        <a href="/categories/create" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-lg"></i> Add New Category
+        </a>
+    </div>
+
+    <div class="card shadow-sm animate-up">
+        <div class="card-header bg-body py-3">
+            <h5 class="mb-0 fw-bold">Categories Hierarchy</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Category Name</th>
+                            <th>Description</th>
+                            <th>Products</th>
+                            <th>Status</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (categories.length === 0) { %>
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-tags fs-1 d-block mb-3"></i>
+                                    No categories found.
+                                </td>
+                            </tr>
+                        <% } %>
+                        
+                        <% /* Recursive function for rendering rows */ %>
+                        <% function renderCategoryRows(cats, level = 0) { %>
+                            <% cats.forEach(cat => { %>
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center" style="margin-left: <%= level * 30 %>px;">
+                                            <% if (level > 0) { %>
+                                                <i class="bi bi-arrow-return-right text-muted me-2 small"></i>
+                                            <% } %>
+                                            <div class="category-icon me-2 bg-<%= level === 0 ? 'primary' : 'light' %> text-<%= level === 0 ? 'white' : 'dark' %>">
+                                                <i class="bi <%= level === 0 ? 'bi-folder' : 'bi-folder2' %>"></i>
+                                            </div>
+                                            <span class="<%= level === 0 ? 'fw-bold' : '' %>"><%= cat.name %></span>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted small"><%= cat.description || '-' %></td>
+                                    <td>
+                                        <span class="badge bg-body-tertiary text-body border">
+                                            <%= cat.productCount || 0 %> products
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success-soft text-success">Active</span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group">
+                                            <a href="/categories/<%= cat._id %>/edit" class="btn btn-sm btn-icon btn-light" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form action="/categories/<%= cat._id %>/delete" method="POST" class="d-inline" onsubmit="return confirm('Archive this category?');">
+                                                <button type="submit" class="btn btn-sm btn-icon btn-light text-danger" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% /* Find children of this category from allCategories if needed, or if passed via tree */ %>
+                                <% const children = allCategories.filter(c => String(c.parent) === String(cat._id)) %>
+                                <% if (children.length > 0) { %>
+                                    <% renderCategoryRows(children, level + 1) %>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+
+                        <% renderCategoryRows(categories) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .category-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+    .btn-icon {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+    .bg-success-soft { background: rgba(16, 185, 129, 0.1); }
+</style>

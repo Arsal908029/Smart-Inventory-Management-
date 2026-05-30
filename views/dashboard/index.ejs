@@ -1,0 +1,360 @@
+<div class="dashboard-wrapper">
+    <div class="d-flex justify-content-between align-items-center mb-5 animate-up">
+        <div>
+            <h1 class="fw-bold mb-1">Business Overview</h1>
+            <p class="text-muted mb-0">Welcome back! Here's what's happening with your inventory today.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-light" id="refreshBtn">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-plus-lg"></i> Quick Action
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/orders/create">New Order</a></li>
+                    <li><a class="dropdown-item" href="/products/create">Add Product</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/aggregation/report">View Reports</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Real-time Statistics Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-xl-3 col-md-6">
+            <div class="card stats-card animate-up" style="animation-delay: 0.1s;">
+                <div class="card-body">
+                    <div class="stats-icon bg-primary text-white">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <h6 class="text-muted fw-semibold mb-1">Total Products</h6>
+                    <h2 class="fw-bold mb-0 counter" data-target="<%= stats.totalProducts %>">0</h2>
+                    <div class="mt-2 text-success small">
+                        <i class="bi bi-arrow-up"></i> 12% from last month
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stats-card animate-up" style="animation-delay: 0.2s;">
+                <div class="card-body">
+                    <div class="stats-icon bg-warning text-white">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <h6 class="text-muted fw-semibold mb-1">Low Stock Items</h6>
+                    <h2 class="fw-bold mb-0 counter" data-target="<%= stats.lowStockProducts %>">0</h2>
+                    <div class="mt-2 text-danger small">
+                        <i class="bi bi-info-circle"></i> Requires attention
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stats-card animate-up" style="animation-delay: 0.3s;">
+                <div class="card-body">
+                    <div class="stats-icon bg-success text-white">
+                        <i class="bi bi-cart-check"></i>
+                    </div>
+                    <h6 class="text-muted fw-semibold mb-1">Today's Orders</h6>
+                    <h2 class="fw-bold mb-0 counter" data-target="<%= stats.todayOrders %>">0</h2>
+                    <div class="mt-2 text-success small">
+                        <i class="bi bi-arrow-up"></i> 5% from yesterday
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stats-card animate-up" style="animation-delay: 0.4s;">
+                <div class="card-body">
+                    <div class="stats-icon bg-info text-white">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+                    <h6 class="text-muted fw-semibold mb-1">Total Revenue</h6>
+                    <h2 class="fw-bold mb-0">Rs. <span class="counter" data-target="<%= stats.totalRevenue %>">0</span></h2>
+                    <div class="mt-2 text-success small">
+                        <i class="bi bi-arrow-up"></i> 8% growth
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <!-- Sales Analytics Section -->
+        <div class="col-xl-8">
+            <div class="card h-100 animate-up" style="animation-delay: 0.5s;">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Sales Analytics</h5>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary active" id="lineChartToggle">Line</button>
+                        <button class="btn btn-outline-secondary" id="barChartToggle">Bar</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="salesChart" height="350"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics Section -->
+        <div class="col-xl-4">
+            <div class="card h-100 animate-up" style="animation-delay: 0.6s;">
+                <div class="card-header">
+                    <h5 class="mb-0">Performance Metrics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Profit Margin</span>
+                            <span class="fw-bold text-success"><%= stats.avgMargin.toFixed(1) %>%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" style="width: <%= stats.avgMargin %>%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Customer Retention</span>
+                            <span class="fw-bold text-primary"><%= stats.retentionRate.toFixed(1) %>%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-primary" style="width: <%= stats.retentionRate %>%"></div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row text-center mt-4">
+                        <div class="col-6 mb-3">
+                            <h6 class="text-muted small">Avg. Order Value</h6>
+                            <h4 class="fw-bold">Rs.<%= stats.averageOrder.toFixed(2) %></h4>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6 class="text-muted small">Inventory Value</h6>
+                            <h4 class="fw-bold">Rs.<%= (stats.inventoryValue / 1000).toFixed(1) %>k</h4>
+                        </div>
+                    </div>
+                    <canvas id="peakHoursChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <!-- Top Products Section -->
+        <div class="col-xl-4">
+            <div class="card h-100 animate-up" style="animation-delay: 0.7s;">
+                <div class="card-header">
+                    <h5 class="mb-0">Top Products</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <% topProducts.forEach((product, index) => { %>
+                            <div class="list-group-item px-4 py-3 border-0">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rank-badge <%= index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : '' %>">
+                                        <%= index + 1 %>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0 fw-bold"><%= product.product.name %></h6>
+                                        <small class="text-muted"><%= product.totalSold %> units sold</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold text-primary">Rs.<%= product.revenue.toLocaleString() %></div>
+                                        <div class="progress mt-1" style="height: 4px; width: 60px;">
+                                            <% const maxSold = topProducts[0]?.totalSold || 1; %>
+                                            <div class="progress-bar bg-primary" style="width: <%= (product.totalSold / maxSold) * 100 %>%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders Section -->
+        <div class="col-xl-8">
+            <div class="card h-100 animate-up" style="animation-delay: 0.8s;">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Activity</h5>
+                    <a href="/orders" class="btn btn-sm btn-light">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-4">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% recentOrders.forEach(order => { %>
+                                    <tr>
+                                        <td class="ps-4 fw-bold">#<%= order.orderNumber || 'ORD-REF' %></td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="avatar-sm"><%= (order.customer && order.customer.name) ? order.customer.name.charAt(0).toUpperCase() : '?' %></div>
+                                                <span><%= (order.customer && order.customer.name) ? order.customer.name : 'Guest' %></span>
+                                            </div>
+                                        </td>
+                                        <td class="fw-bold">Rs.<%= order.total.toLocaleString() %></td>
+                                        <td>
+                                            <span class="badge bg-<%= order.status === 'completed' ? 'success-soft' : order.status === 'pending' ? 'warning-soft' : 'secondary-soft' %> text-<%= order.status === 'completed' ? 'success' : order.status === 'pending' ? 'warning' : 'secondary' %>">
+                                                <%= order.status %>
+                                            </span>
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-icon" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li><a class="dropdown-item" href="/orders/<%= order._id %>">View Details</a></li>
+                                                    <li><a class="dropdown-item" href="/invoices/generate/<%= order._id %>">Print Invoice</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .success-soft { background-color: rgba(16, 185, 129, 0.1); }
+    .warning-soft { background-color: rgba(245, 158, 11, 0.1); }
+    .secondary-soft { background-color: rgba(100, 116, 139, 0.1); }
+    
+    .rank-badge {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #64748b;
+    }
+    .rank-1 { background: #fef3c7; color: #d97706; }
+    .rank-2 { background: #e2e8f0; color: #475569; }
+    .rank-3 { background: #ffedd5; color: #ea580c; }
+
+    .avatar-sm {
+        width: 32px;
+        height: 32px;
+        background: var(--primary);
+        color: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+</style>
+
+<script>
+    // Counter Animation
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const target = +counter.getAttribute('data-target');
+        const increment = target / 50;
+        
+        const updateCount = () => {
+            const count = +counter.innerText.replace(/,/g, '');
+            if (count < target) {
+                counter.innerText = Math.ceil(count + increment).toLocaleString();
+                setTimeout(updateCount, 20);
+            } else {
+                counter.innerText = target.toLocaleString();
+            }
+        };
+        updateCount();
+    });
+
+    // Sales Chart
+    const salesCtx = document.getElementById('salesChart').getContext('2d');
+    const monthlySales = <%- JSON.stringify(monthlySales) %>;
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const salesData = new Array(12).fill(0);
+    monthlySales.forEach(m => salesData[m._id - 1] = m.total);
+
+    let salesChart = new Chart(salesCtx, {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Revenue',
+                data: salesData,
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#6366f1',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { borderDash: [5, 5] } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Chart Toggles
+    document.getElementById('lineChartToggle').addEventListener('click', function() {
+        this.classList.add('active');
+        document.getElementById('barChartToggle').classList.remove('active');
+        salesChart.config.type = 'line';
+        salesChart.update();
+    });
+    document.getElementById('barChartToggle').addEventListener('click', function() {
+        this.classList.add('active');
+        document.getElementById('lineChartToggle').classList.remove('active');
+        salesChart.config.type = 'bar';
+        salesChart.update();
+    });
+
+    // Peak Hours Chart
+    const peakCtx = document.getElementById('peakHoursChart').getContext('2d');
+    const peakHoursData = <%- JSON.stringify(peakHours) %>;
+    const hours = Array.from({length: 24}, (_, i) => `${i}:00`);
+    const hourlyCounts = new Array(24).fill(0);
+    peakHoursData.forEach(h => hourlyCounts[h._id] = h.count);
+
+    new Chart(peakCtx, {
+        type: 'bar',
+        data: {
+            labels: hours,
+            datasets: [{
+                data: hourlyCounts,
+                backgroundColor: '#0ea5e9',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false }, title: { display: true, text: 'Orders by Hour' } },
+            scales: { y: { display: false }, x: { display: false } }
+        }
+    });
+</script>

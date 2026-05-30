@@ -1,0 +1,58 @@
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="d-flex justify-content-between align-items-center mb-4 animate-up">
+            <div>
+                <h2 class="fw-bold mb-1">Add Category</h2>
+                <p class="text-muted small">Create a new category to organize your inventory.</p>
+            </div>
+            <a href="/categories" class="btn btn-light shadow-sm">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+
+        <div class="card shadow-sm animate-up">
+            <div class="card-body p-4">
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-octagon me-2"></i> <%= error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+
+                <form action="/categories" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-uppercase">Category Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-lg" name="name" required value="<%= category ? category.name : '' %>" placeholder="e.g., Smartphones">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-uppercase">Parent Category</label>
+                        <select class="form-select" name="parent">
+                            <option value="">None (Top Level)</option>
+                            <% categories.forEach(cat => { %>
+                                <option value="<%= cat._id %>" <%= category && category.parent == cat._id ? 'selected' : '' %>><%= cat.name %></option>
+                            <% }) %>
+                        </select>
+                        <small class="text-muted">Select a parent if this is a subcategory.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-uppercase">Display Order</label>
+                        <input type="number" class="form-control" name="order" value="<%= category ? category.order : 0 %>">
+                        <small class="text-muted">Lower numbers appear first.</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-uppercase">Description</label>
+                        <textarea class="form-control" name="description" rows="3" placeholder="Briefly describe what this category contains..."><%= category ? category.description : '' %></textarea>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary shadow-sm">Create Category</button>
+                        <a href="/categories" class="btn btn-light">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
