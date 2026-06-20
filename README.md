@@ -11,7 +11,7 @@ Developed as a Final Semester Project for **CSC316 - Advanced Database Systems**
 ### 1. Authentication & Role-Based Access Control (RBAC)
 - **Roles:** Admin, Manager, and Staff.
 - **Security:** Password hashing using `bcryptjs` and session-based authentication with `express-session` and `connect-mongo`.
-- **Permissions:** 
+- **Permissions:**
   - **Admin:** Full system control, user management, and Database Administration (Index Management, Sharding Configuration, Transaction Demos).
   - **Manager:** Product management, supplier coordination, and viewing advanced sales aggregation reports.
   - **Staff:** Read-only access to inventory, sales registration, order creation, and invoice generation.
@@ -156,14 +156,14 @@ Open your browser and navigate to `http://localhost:3000`.
 ## ⚡ Testing Database Features
 
 ### ACID Transactions
-Navigate to **Database Admin -> Transactions Demo** in the web dashboard. You can test point transfers and intentionally check "Simulate Error" to observe automatic rollback (`abortTransaction()`), which leaves the user balances unmodified. 
+Navigate to **Database Admin → Transactions Demo** in the web dashboard. You can test point transfers and intentionally check "Simulate Error" to observe automatic rollback (`abortTransaction()`), which leaves the user balances unmodified.
 Alternatively, run the concurrent transaction tester script:
 ```bash
 node scripts/concurrent_transactions_test.js
 ```
 
 ### Dynamic Index Management
-Navigate to **Database Admin -> Index Management** to view all active collection indexes. You can dynamically create and drop custom indexes directly from the dashboard.
+Navigate to **Database Admin → Index Management** to view all active collection indexes. You can dynamically create and drop custom indexes directly from the dashboard.
 
 ### Local Sharding Cluster Simulation
 To setup a sharded environment locally:
@@ -172,7 +172,7 @@ To setup a sharded environment locally:
    ```bash
    bash scripts/setup_sharding.sh
    ```
-3. Navigate to **Database Admin -> Sharding** to verify sharded cluster statistics and status.
+3. Navigate to **Database Admin → Sharding** to verify sharded cluster statistics and status.
 
 ---
 
